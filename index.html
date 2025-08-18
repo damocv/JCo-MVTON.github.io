@@ -1,94 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JCo-MVTON: Jointly Calibrated Multi-View Try-On</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.8;
-      color: #333;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #f9f9f9;
-    }
-    h1, h2, h3 {
-      color: #2c3e50;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .teaser {
-      text-align: center;
-      margin: 30px 0;
-    }
-    .links a {
-      margin: 0 15px;
-      font-size: 1.1em;
-      text-decoration: none;
-      color: #3498db;
-    }
-    .links a:hover {
-      text-decoration: underline;
-    }
-    footer {
-      margin-top: 50px;
-      text-align: center;
-      color: #7f8c8d;
-      font-size: 0.9em;
-    }
-    pre {
-      background: #f1f1f1;
-      padding: 15px;
-      border-radius: 6px;
-      overflow-x: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JCo-MVTON: Jointly Controllable Multi-Modal Diffusion Transformer for Mask-Free Virtual Try-on</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="JCo-MVTON: A novel approach for mask-free virtual try-on using jointly controllable multi-modal diffusion transformers">
+    <meta name="keywords" content="virtual try-on, diffusion transformer, computer vision, fashion tech, deep learning">
+    <meta property="og:title" content="JCo-MVTON: Jointly Controllable Multi-Modal Diffusion Transformer">
+    <meta property="og:description" content="Technical report on mask-free virtual try-on using multi-modal diffusion transformers">
+    <meta property="og:type" content="article">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: white;
+            color: #2d3748;
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+            color: #2d3748;
+            line-height: 1.3;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #667eea;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .authors {
+            background: white;
+            padding: 40px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .authors-list {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+        
+        .author {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 5px 0;
+        }
+        
+        .affiliation {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+            color: #718096;
+        }
+        
+        .main-content {
+            background: white;
+            padding: 60px 0;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #2d3748;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .abstract {
+            font-size: 1.0rem;
+            line-height: 1.8;
+            color: #4a5568;
+            text-align: justify;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .method-overview {
+            background: #f7fafc;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px auto;
+            max-width: 900px;
+        }
+        
+        .method-diagram {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .method-diagram img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            background: white;
+            padding: 10px;
+        }
+        
+        .method-diagram-fallback {
+            width: 100%;
+            height: 400px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            border: 2px dashed #cbd5e0;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .method-description {
+            text-align: left;
+            color: #4a5568;
+            line-height: 1.7;
+            margin-top: 20px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        .feature-desc {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .results-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .result-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .result-image {
+            width: 100%;
+            height: 200px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .result-caption {
+            padding: 20px;
+            font-size: 0.95rem;
+            color: #4a5568;
+            text-align: center;
+        }
+        
+        .links-section {
+            background: #f7fafc;
+            padding: 50px 0;
+        }
+        
+        .links-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .citation-box {
+            background: #f7fafc;
+            color: #2d3748;
+            padding: 30px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.0rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            max-width: 900px;
+            margin: 20px auto;
+        }
+        
+        .footer {
+            background: #1a202c;
+            color: #a0aec0;
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .acknowledgments {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #4a5568;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                padding: 50px 0;
+            }
+            
+            .authors-list .author {
+                display: block;
+                margin: 5px 0;
+            }
+            
+            .links-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <h1>JCo-MVTON: Jointly Calibrated Multi-View Try-On</h1>
-  <p><strong>Authors</strong>: Your Name, Co-Author, Advisor</p>
-  <p><strong>Affiliation</strong>: Your University / Lab</p>
-  <p><strong>Conference</strong>: CVPR 2024 (or arXiv)</p>
-
-  <div class="links">
-    <a href="paper.pdf" target="_blank">📄 Paper (PDF)</a>
-    <a href="https://github.com/damocv/JCo-MVTON" target="_blank">💻 Code</a>
-    <a href="#bibtex">🔖 Cite</a>
-    <a href="https://arxiv.org/abs/..." target="_blank">📚 arXiv</a>
-  </div>
-
-  <div class="teaser">
-  </div>
-
-  <h2>Abstract</h2>
-  <p>
-    We propose JCo-MVTON, a novel framework for multi-view virtual try-on, 
-    which jointly calibrates clothing deformation and texture rendering across views. 
-    Our method achieves state-of-the-art results on benchmark datasets.
-  </p>
-
-  <h2>Results</h2>
-
-  <h2 id="bibtex">BibTeX</h2>
-  <pre>
-@inproceedings{jcovton2024,
-  title={JCo-MVTON: Jointly Calibrated Multi-View Try-On},
-  author={Your Name and Co Author and Advisor},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  year={2024}
+    <header class="header">
+        <div class="container">
+            <h1 class="title"><strong>JCo-MVTON:</strong> Jointly Controllable Multi-Modal Diffusion Transformer for Mask-Free Virtual Try-on</h1>
+        </div>
+    </header>
+    
+    <section class="authors">
+        <div class="container">
+            <div class="authors-list">
+                <span class="author">Author Name 1</span>
+                <span class="author">Author Name 2</span>
+                <span class="author">Author Name 3</span>
+                <span class="author">Author Name 4</span>
+            </div>
+            <p class="affiliation">University/Institution Name</p>
+        </div>
+    </section>
+    
+    <section class="links-section">
+        <div class="container">
+            <div class="links-grid">
+                <a href="#" class="link-button">
+                    📄 Paper
+                </a>
+                <a href="#" class="link-button">
+                    💻 Code
+                </a>
+                <a href="#" class="link-button">
+                    🎥 Demo
+                </a>
+                <a href="#" class="link-button">
+                    📊 Dataset
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <main class="main-content">
+        <div class="container">
+            <section class="section">
+                <h2 class="section-title">Abstract</h2>
+                <p class="abstract">
+                    Virtual try-on systems have long struggled with rigid dependencies on human body masks, limited fine-
+grained control over garment attributes, and poor generalization to in-the-wild scenarios. In this paper,
+we propose JCo-MVTON (Jointly Controllable Multi-Modal Diffusion Transformer for Mask-Free Virtual
+Try-On), a novel framework that simultaneously addresses these challenges by unifying diffusion-based
+generation with multi-modal condition fusion. Our architecture leverages a Multi-Modal Diffusion
+Transformer (MM-DiT) backbone to integrate diverse control signals—including reference image
+and garment image—directly into the denoising process. Our key architectural innovation involves
+conditioning the MM-DiT by fusing reference and garment information into its self-attention layers
+through dedicated conditional pathways. This integration is augmented by critical refinements to the
+positional encodings and attention masks, which specialize the multi-conditional MM-DiT for the
+nuanced requirements of the virtual try-on task and yield superior results. On the data curation front,
+we introduce a bi-directional generation strategy to construct our training set. This approach leverages
+two complementary pathways: first, a mask-based model is employed to generate a substantial volume
+of reference images; second, a Try-Off model, sharing an identical architecture and trained via self-
+supervision, synthesizes the corresponding garment data. 
+                </p>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Method Overview</h2>
+                <div class="method-overview">
+                    <div class="method-diagram">
+                        <img src="assets/overview.png" 
+                             alt="JCo-MVTON Method Architecture Overview" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="method-diagram-fallback" style="display: none;">
+                            <p>📊 Method Architecture Diagram</p>
+                            <small>Image: assets/overview.png<br>Please ensure the image file exists in the assets folder</small>
+                        </div>
+                    </div>
+                    <div class="method-description">
+                        <p>
+                            The overall framework of JCo-MVTON. Given a fixed prompt, reference image, and garment image as
+inputs, the Joint MM-DiT architecture fuses multi-conditional features to synthesize the try-on image. Within each
+Joint MM-DiT block, noise and conditional features are processed through three parallel branches and fused via
+self-attention.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Data Preparation</h2>
+                <div class="method-overview">
+                    <div class="method-diagram">
+                        <img src="assets/data.png" 
+                             alt="JCo-MVTON Data Preparation Pipeline" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="method-diagram-fallback" style="display: none;">
+                            <p>📊 Data Preparation Pipeline</p>
+                            <small>Image: assets/data.png<br>Please ensure the image file exists in the assets folder</small>
+                        </div>
+                    </div>
+                    <div class="method-description">
+                        <p>
+                           Overview of the two‑stage data pipeline used to build our mask‑free virtual try‑on dataset. Stage I bootstraps a raw pool by alternately running a Try‑Off model, which generates garment images, and a mask‑based try‑on model, which produces initial reference images. Stage II iteratively refines and enlarges the dataset: human‑in‑the‑loop filtering cleans the seed pool, JCo‑MVTON regenerates sharper triplets, and ICLoRA injects new styles to widen the domain. The cycle repeats until the refined pool reaches the desired quality and diversity.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Results</h2>
+                <div class="method-overview">
+                    <div class="method-diagram">
+                        <img src="assets/results.jpg" 
+                             alt="JCo-MVTON Results and Comparisons" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="method-diagram-fallback" style="display: none;">
+                            <p>📊 Results and Comparisons</p>
+                            <small>Image: assets/results.jpg<br>Please ensure the image file exists</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">BibTeX Citation</h2>
+                <div class="citation-box">
+@article{author2024jco,
+  title={JCo-MVTON: Jointly Controllable Multi-Modal Diffusion Transformer for Mask-Free Virtual Try-on},
+  author={Author, First and Author, Second and Author, Third},
+  journal={Conference/Journal Name},
+  year={2024},
+  pages={xxx--xxx}
 }
-  </pre>
-
-  <footer>
-    &copy; 2024 JCo-MVTON. Project page built with ❤️ using GitHub Pages.
-  </footer>
-
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add loading animation for result images
+        document.querySelectorAll('.result-image').forEach(img => {
+            img.addEventListener('click', function() {
+                this.style.background = '#e2e8f0';
+                this.innerHTML = 'Loading full resolution...';
+                setTimeout(() => {
+                    this.style.background = '#f1f5f9';
+                    this.innerHTML = this.getAttribute('data-original') || 'Click to view full size';
+                }, 1000);
+            });
+        });
+    </script>
 </body>
 </html>
