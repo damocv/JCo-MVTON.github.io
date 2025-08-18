@@ -70,19 +70,44 @@
             text-align: center;
             font-size: 1.1rem;
             color: #4a5568;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
         }
         
         .author {
-            display: inline-block;
-            margin: 0 15px;
-            padding: 5px 0;
+            display: inline;
+            margin-right: 25px;
+        }
+        
+        .author:last-of-type {
+            margin-right: 0;
+        }
+        
+        .author sup {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .affiliations {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 1rem;
+            color: #718096;
+            line-height: 1.6;
         }
         
         .affiliation {
-            text-align: center;
-            margin-top: 20px;
-            font-style: italic;
-            color: #718096;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .affiliation sup {
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: 600;
+            margin-right: 3px;
         }
         
         .main-content {
@@ -323,8 +348,8 @@
             }
             
             .authors-list .author {
-                display: block;
-                margin: 5px 0;
+                display: inline-block;
+                margin: 5px 10px 5px 0;
             }
             
             .links-grid {
@@ -348,13 +373,17 @@
     <section class="authors">
         <div class="container">
             <div class="authors-list">
-                <span class="author">Aowen Wang</span>
-                <span class="author">Wei Li</span>
-                <span class="author">Hao Luo</span>
-                <span class="author">Mengxing Ao</span>
-                <span class="author">Fan Wang</span>
+                <span class="author">Aowen Wang<sup>1</sup>,</span>
+                <span class="author">Wei Li<sup>1</sup>,</span>
+                <span class="author">Hao Luo<sup>1,2</sup>,</span>
+                <span class="author">Mengxing Ao<sup>1</sup>,</span>
+                <span class="author">Fan Wang<sup>1</sup>,</span>
+
             </div>
-            <p class="affiliation">DAMO Academy, Alibaba Group</p>
+            <div class="affiliations">
+                <span class="affiliation"><sup>1</sup>DAMO Academy, Alibaba Group</span>
+                <span class="affiliation"><sup>2</sup>Hupan Lab</span>
+            </div>
         </div>
     </section>
     
@@ -458,9 +487,9 @@ self-attention.
             <section class="section">
                 <h2 class="section-title">BibTeX Citation</h2>
                 <div class="citation-box">
-@article{author2024jco,
+@article{wang2024jco,
   title={JCo-MVTON: Jointly Controllable Multi-Modal Diffusion Transformer for Mask-Free Virtual Try-on},
-  author={Author, First and Author, Second and Author, Third},
+  author={Wang, Jianyuan and Chen, Minghao and Karaev, Nikita and Vedaldi, Andrea and Rupprecht, Christian and Novotny, David},
   journal={Conference/Journal Name},
   year={2024},
   pages={xxx--xxx}
